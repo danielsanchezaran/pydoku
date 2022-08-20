@@ -83,7 +83,7 @@ class BoardChecker:
             col_next += 1
         if col >= dim:
             sol_list.append(deepcopy(b[0]))
-            b[0].print_board()
+            # b[0].print_board()
             return True
         while col < dim and input_n <= dim and (not(check_one_soltion and len(sol_list) > 1)):
             if b[0].get_number(row, col) == 0:
@@ -106,29 +106,30 @@ class BoardChecker:
 
 if __name__ == "__main__":
     print()
-    b = Board(4)
+    b = Board(9)
     checker = BoardChecker("default")
 
     copied_sudoku = [[0,0,3,0,2,0,6,0,0],
-                    [0,0,0,0,0,5,0,0,1],
+                    [9,0,0,3,0,5,0,0,1],
                     [0,0,1,8,0,6,4,0,0],
                     [0,0,8,1,0,2,9,0,0],
                     [7,0,0,0,0,0,0,0,8],
                     [0,0,6,7,0,8,2,0,0],
-                    [0,0,2,0,0,9,5,0,0],
-                    [8,0,0,0,0,3,0,0,0],
+                    [0,0,2,6,0,9,5,0,0],
+                    [8,0,0,2,0,3,0,0,9],
                     [0,0,5,0,1,0,3,0,0]]
     b.set_sudoku_list(copied_sudoku)
     b.print_board()
 
-    # sol_list = checker.solve([b])
+    print("Solutions: ")
 
-    # for board in sol_list:
-    #     board.print_board()
-    # print("Sols: ", len(sol_list))
+    sol_list = checker.solve([b])
+
+    for board in sol_list:
+        board.print_board()
     
 
-    checker.has_unique_solution([b])
+    # print(checker.has_unique_solution([b]))
 
     # -------------------------------------------------
     # 1     2     3  |  4     5     6  |  7     8     9
