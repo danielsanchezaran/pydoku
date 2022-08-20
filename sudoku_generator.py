@@ -137,10 +137,4 @@ if __name__ == "__main__":
         b.input_number(row, col, n)
         print("Sub square row,col: ", b.get_inner_square_row_col(row, col))
         b.print_board()
-        # f = b.get_inner_square(1,1)
-        # f.print_board()
-        print(checker.checkBoardColumn(b, 1))
-        print(b.get_board_as_row_list())
-        print("Inner square 0,0 is correct: ",
-              checker.checkBoardInnerSquare(b, 0, 0))
-        print("Cell is possible: ", checker.checkCellisValid(b, row, col))
+     
