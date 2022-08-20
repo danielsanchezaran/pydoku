@@ -113,11 +113,6 @@ if __name__ == "__main__":
         b.input_number(i, 8, n)
         n += 1
     
-    # n = 4
-    # for i in range(3,6):
-    #     b.input_number(i, 8, n)
-    #     n += 1
-
     b.print_board()
     b = checker.solve([b])
     b[0].print_board()
