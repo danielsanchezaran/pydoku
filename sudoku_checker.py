@@ -56,7 +56,11 @@ class BoardChecker:
         input_n = 1
         row = 0
         col = 0
-        self.brute_force_solver(b,row,col,input_n)
+
+        b_clone = b
+        if self.brute_force_solver(b_clone,row,col,input_n):
+            print("Solved!")
+            return b_clone
         return b
       
     def brute_force_solver(self, b: "list[Board]", row: int, col: int, input_n: int) -> bool:
@@ -97,13 +101,22 @@ class BoardChecker:
 
 if __name__ == "__main__":
     print()
-    b = Board(4)
+    b = Board(9)
     checker = BoardChecker("default")
 
     n = 1
-    for i in range(4):
-        b.input_number(i, 1, n)
+    for i in range(9):
+        b.input_number(0, i, n)
         n += 1
+    n = 1
+    for i in range(1,9):
+        b.input_number(i, 8, n)
+        n += 1
+    
+    # n = 4
+    # for i in range(3,6):
+    #     b.input_number(i, 8, n)
+    #     n += 1
 
     b.print_board()
     b = checker.solve([b])
