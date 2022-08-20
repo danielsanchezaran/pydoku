@@ -48,6 +48,21 @@ class Board:
             self.cell_matrix.append(temp_row)
         pass
 
+    def set_sudoku_list(self, sudoku_list : "list[int]") -> None:
+        self.cell_matrix = []
+        try: 
+            self.dim = len(sudoku_list)
+            self.dim_sqrt = int(math.sqrt(self.dim))
+            for i in range(self.dim):
+                temp_row = []
+                for j in range(self.dim):
+                    c = Cell(sudoku_list[i][j])
+                    temp_row.append(c)
+                self.cell_matrix.append(temp_row)
+        except:
+            raise ValueError 
+
+
     def get_board_as_row_list(self) -> CellList:
         out_list = []
         for i in range(self.dim):
@@ -103,6 +118,18 @@ if __name__ == "__main__":
     from sudoku_checker import *
     b = Board(4)
     checker = BoardChecker("default")
+
+    copied_sudoku = [[0,0,3,0,2,0,6,0,0],
+                    [9,0,0,3,0,5,0,0,1],
+                    [0,0,1,8,0,6,4,0,0],
+                    [0,0,8,1,0,2,9,0,0],
+                    [7,0,0,0,0,0,0,0,8],
+                    [0,0,6,7,0,8,2,0,0],
+                    [0,0,2,6,0,9,5,0,0],
+                    [8,0,0,2,0,3,0,0,9],
+                    [0,0,5,0,1,0,3,0,0]]
+    b.set_sudoku_list(copied_sudoku)
+    b.print_board()
     while True:
         row = int(input("Enter row number :"))
         col = int(input("Enter col number :"))

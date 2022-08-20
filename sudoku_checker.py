@@ -20,7 +20,6 @@ class BoardChecker:
     def checkBoardColumn(self, b: Board, col: int) -> bool:
         checked_elems = b.dim * [False]
         col_to_check = b.get_col(col)
-        # print(col_to_check)
         for elem in col_to_check:
             if elem == 0:
                 continue
@@ -49,27 +48,31 @@ class BoardChecker:
         inner_square_possible = self.checkBoardInnerSquare(b, row, col)
         return row_possible and col_possible and inner_square_possible
 
+    def has_unique_solution(self, b: "list[Board]") -> "list[Board]":
+        sol_list = []
+        if (self.solving_method == "default"):
+            solutions = self.solve_brute_force(b, sol_list, check_one_soltion=True)
+            for b_ in solutions:
+                b_.print_board()
+        return len(solutions) == 1
+            
+
     def solve(self, b: "list[Board]") -> "list[Board]":
-        sol_list = [b[0]]
+        sol_list = []
         if (self.solving_method == "default"):
             return self.solve_brute_force(b, sol_list)
 
-    def solve_brute_force(self, b: "list[Board]", sol_list: "list[Board]") -> "list[Board]":
+    def solve_brute_force(self, b: "list[Board]", sol_list: "list[Board]", check_one_soltion = False) -> "list[Board]":
         input_n = 1
         row = 0
         col = 0
 
         b_clone = b
-        self.brute_force_solver(b_clone, row, col, input_n, sol_list)
-        print("Solved!")
+        self.brute_force_solver(b_clone, row, col, input_n, sol_list,check_one_soltion)
         return sol_list
         
 
-    def brute_force_solver(self, b: "list[Board]", row: int, col: int, input_n: int, sol_list: "list[Board]") -> bool:
-        # print("starting new solve at ")
-        # print("row" , row, "col", col)
-        # print("input", input_n)
-        # print()
+    def brute_force_solver(self, b: "list[Board]", row: int, col: int, input_n: int, sol_list: "list[Board]",check_one_soltion = False) -> bool:
         dim = b[0].dim
         row_next = row + 1
         col_next = col
@@ -81,25 +84,21 @@ class BoardChecker:
         if col >= dim:
             sol_list.append(deepcopy(b[0]))
             b[0].print_board()
-            input("More?")
             return True
-        while col < dim and input_n <= dim:
+        while col < dim and input_n <= dim and (not(check_one_soltion and len(sol_list) > 1)):
             if b[0].get_number(row, col) == 0:
                 b[0].input_number(row, col, input_n)
                 if not self.checkCellisValid(b[0], row, col):
-                    # print("wrong input: ", input_n, " row" , row, " col", col)
                     input_n += 1
                     b[0].input_number(row, col, 0)
                     continue
-                # print("possibly right input: ", input_n, " row" , row, " col", col, "row_next, col_next,", row_next, col_next)
-                # b[0].print_board()
                 self.brute_force_solver(
                     b, row_next, col_next, input_n_next, sol_list)
+                if (check_one_soltion and len(sol_list) > 1):
+                    break
 
                 input_n += 1
                 b[0].input_number(row, col, 0)
-                # print("row" , row, "col", col)
-                # print("input", input_n)
                 continue
             return self.brute_force_solver(b, row_next, col_next, input_n_next, sol_list)
         return False
@@ -110,37 +109,26 @@ if __name__ == "__main__":
     b = Board(4)
     checker = BoardChecker("default")
 
-    n = 1
-    for i in range(4):
-        b.input_number(0, i, n)
-        n += 1
-    n = 1
-    # for i in range(1, 4):
-    #     b.input_number(i, 3, n)
-    #     n += 1
-
-    # b.input_number(3, 4, 9)
-    # b.input_number(4, 4, 2)
-    # b.input_number(5, 4, 8)
-
-    # b.input_number(3, 5, 5)
-    # b.input_number(4, 5, 7)
-    # b.input_number(5, 5, 4)
-
-    # b.input_number(3, 3, 6)
-    # b.input_number(4, 3, 1)
-    # b.input_number(5, 3, 3)
-
-    # b.input_number(6, 6, 9)
-    # b.input_number(7, 6, 5)
-    # b.input_number(8, 6, 1)
-
+    copied_sudoku = [[0,0,3,0,2,0,6,0,0],
+                    [0,0,0,0,0,5,0,0,1],
+                    [0,0,1,8,0,6,4,0,0],
+                    [0,0,8,1,0,2,9,0,0],
+                    [7,0,0,0,0,0,0,0,8],
+                    [0,0,6,7,0,8,2,0,0],
+                    [0,0,2,0,0,9,5,0,0],
+                    [8,0,0,0,0,3,0,0,0],
+                    [0,0,5,0,1,0,3,0,0]]
+    b.set_sudoku_list(copied_sudoku)
     b.print_board()
-    sol_list = checker.solve([b])
 
-    print("Sols ")
-    for board in sol_list:
-        board.print_board()
+    # sol_list = checker.solve([b])
+
+    # for board in sol_list:
+    #     board.print_board()
+    # print("Sols: ", len(sol_list))
+    
+
+    checker.has_unique_solution([b])
 
     # -------------------------------------------------
     # 1     2     3  |  4     5     6  |  7     8     9
