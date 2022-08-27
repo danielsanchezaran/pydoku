@@ -34,11 +34,14 @@ if __name__ == "__main__":
                      [8, 0, 0, 2, 0, 3, 0, 0, 9],
                      [0, 0, 5, 0, 1, 0, 3, 0, 0]]
     b.set_sudoku_list(copied_sudoku)
+    print("Original Sudoku")
     b.print_board()
+
     sol = checker.solve([b])
+    print("Solution:")
     sol[0].print_board()
 
     generator = SudokuGenerator(checker)
-
     one_solution_sudoku = generator.get_one_solution_sudoku(sol)
+    print("A random sudoku with one solution:")
     one_solution_sudoku.print_board()
