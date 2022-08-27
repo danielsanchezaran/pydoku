@@ -1,6 +1,5 @@
-from sudoku_generator import Board
+from sudoku import Board
 from copy import deepcopy
-
 
 class BoardChecker:
     def __init__(self, solving_method: str) -> None:
@@ -48,31 +47,29 @@ class BoardChecker:
         inner_square_possible = self.checkBoardInnerSquare(b, row, col)
         return row_possible and col_possible and inner_square_possible
 
-    def has_unique_solution(self, b: "list[Board]") -> "list[Board]":
+    def has_unique_solution(self, b: "list[Board]") -> bool:
         sol_list = []
         if (self.solving_method == "default"):
-            solutions = self.solve_brute_force(b, sol_list, check_one_soltion=True)
-            for b_ in solutions:
-                b_.print_board()
+            solutions = self.solve_brute_force(
+                b, sol_list, check_one_soltion=True)
         return len(solutions) == 1
-            
 
     def solve(self, b: "list[Board]") -> "list[Board]":
         sol_list = []
         if (self.solving_method == "default"):
             return self.solve_brute_force(b, sol_list)
 
-    def solve_brute_force(self, b: "list[Board]", sol_list: "list[Board]", check_one_soltion = False) -> "list[Board]":
+    def solve_brute_force(self, b: "list[Board]", sol_list: "list[Board]", check_one_soltion=False) -> "list[Board]":
         input_n = 1
         row = 0
         col = 0
 
         b_clone = b
-        self.brute_force_solver(b_clone, row, col, input_n, sol_list,check_one_soltion)
+        self.brute_force_solver(
+            b_clone, row, col, input_n, sol_list, check_one_soltion)
         return sol_list
-        
 
-    def brute_force_solver(self, b: "list[Board]", row: int, col: int, input_n: int, sol_list: "list[Board]",check_one_soltion = False) -> bool:
+    def brute_force_solver(self, b: "list[Board]", row: int, col: int, input_n: int, sol_list: "list[Board]", check_one_soltion=False) -> bool:
         dim = b[0].dim
         row_next = row + 1
         col_next = col
@@ -85,7 +82,7 @@ class BoardChecker:
             sol_list.append(deepcopy(b[0]))
             # b[0].print_board()
             return True
-        while col < dim and input_n <= dim and (not(check_one_soltion and len(sol_list) > 1)):
+        while col < dim and input_n <= dim and (not (check_one_soltion and len(sol_list) > 1)):
             if b[0].get_number(row, col) == 0:
                 b[0].input_number(row, col, input_n)
                 if not self.checkCellisValid(b[0], row, col):
@@ -109,15 +106,15 @@ if __name__ == "__main__":
     b = Board(9)
     checker = BoardChecker("default")
 
-    copied_sudoku = [[0,0,3,0,2,0,6,0,0],
-                    [9,0,0,3,0,5,0,0,1],
-                    [0,0,1,8,0,6,4,0,0],
-                    [0,0,8,1,0,2,9,0,0],
-                    [7,0,0,0,0,0,0,0,8],
-                    [0,0,6,7,0,8,2,0,0],
-                    [0,0,2,6,0,9,5,0,0],
-                    [8,0,0,2,0,3,0,0,9],
-                    [0,0,5,0,1,0,3,0,0]]
+    copied_sudoku = [[0, 0, 3, 0, 2, 0, 6, 0, 0],
+                     [9, 0, 0, 3, 0, 5, 0, 0, 1],
+                     [0, 0, 1, 8, 0, 6, 4, 0, 0],
+                     [0, 0, 8, 1, 0, 2, 9, 0, 0],
+                     [7, 0, 0, 0, 0, 0, 0, 0, 8],
+                     [0, 0, 6, 7, 0, 8, 2, 0, 0],
+                     [0, 0, 2, 6, 0, 9, 5, 0, 0],
+                     [8, 0, 0, 2, 0, 3, 0, 0, 9],
+                     [0, 0, 5, 0, 1, 0, 3, 0, 0]]
     b.set_sudoku_list(copied_sudoku)
     b.print_board()
 
@@ -127,7 +124,6 @@ if __name__ == "__main__":
 
     for board in sol_list:
         board.print_board()
-    
 
     # print(checker.has_unique_solution([b]))
 

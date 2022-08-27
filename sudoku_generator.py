@@ -1,140 +1,44 @@
-from __future__ import annotations
-import numpy as np
-import math
+from sudoku import Board
+from sudoku_checker import BoardChecker
+from copy import deepcopy
+from random import randint
 
 
-class Cell:
-    def __init__(self, number) -> None:
-        self.number = number
-        pass
+class SudokuGenerator:
+    def __init__(self, checker: BoardChecker) -> None:
+        self.checker = checker
 
-    def __repr__(self):
-        if self.number == 0:
-            return "X"
-        return str(self.number)
+    def get_one_solution_sudoku(self, solved_sudoku: "list[Board]") -> Board:
+        temp_sudoku = deepcopy(solved_sudoku[0])
+        row_to_null = randint(0, 8)
+        col_to_null = randint(0, 8)
+        solved_sudoku[0].input_number(row_to_null, col_to_null, 0)
+        one_solution = self.checker.has_unique_solution(solved_sudoku)
 
-    def __str__(self):
-        if self.number == 0:
-            return "X"
-        return str(self.number)
-
-    def __eq__(self, __o: object) -> bool:
-        return self.number == __o
-
-    def get_number(self) -> int:
-        return self.number
-
-    def input_number(self, number: int) -> None:
-        self.number = number
-
-    def print_number(self) -> None:
-        print(self.number)
-
-
-CellList = list[Cell]
-
-
-class Board:
-    def __init__(self, n: int) -> None:
-        self.cell_matrix = []
-        self.dim = n
-        # Should throw error if not int anyways
-        self.dim_sqrt = int(math.sqrt(n))
-        for _ in range(n):
-            temp_row = []
-            for __ in range(n):
-                c = Cell(0)
-                temp_row.append(c)
-            self.cell_matrix.append(temp_row)
-        pass
-
-    def set_sudoku_list(self, sudoku_list : "list[int]") -> None:
-        self.cell_matrix = []
-        try: 
-            self.dim = len(sudoku_list)
-            self.dim_sqrt = int(math.sqrt(self.dim))
-            for i in range(self.dim):
-                temp_row = []
-                for j in range(self.dim):
-                    c = Cell(sudoku_list[i][j])
-                    temp_row.append(c)
-                self.cell_matrix.append(temp_row)
-        except:
-            raise ValueError 
-
-
-    def get_board_as_row_list(self) -> CellList:
-        out_list = []
-        for i in range(self.dim):
-            row_ = self.get_row(i)
-            out_list += row_
-        return out_list
-
-    def get_row(self, n_row: int) -> CellList:
-        return self.cell_matrix[n_row]
-
-    def get_col(self, n_col: int) -> CellList:
-        return [x for x in [self.cell_matrix[y][n_col] for y in range(self.dim)]]
-
-    def get_inner_square_row_col(self, row: int, col: int) -> "list[int]":
-        return [int(row / self.dim_sqrt), int(col / self.dim_sqrt)]
-
-    def get_inner_square(self, n_square_row: int, n_square_col: int) -> Board:
-        inner_square = []
-        for row in range(n_square_row*self.dim_sqrt, n_square_row * self.dim_sqrt + self.dim_sqrt):
-            temp_square = []
-            for col in range(n_square_col*self.dim_sqrt, self.dim_sqrt + n_square_col*self.dim_sqrt):
-                temp_square.append(self.cell_matrix[row][col])
-            inner_square.append(temp_square)
-        inner_square_board = Board(self.dim_sqrt)
-        inner_square_board.cell_matrix = inner_square
-        return inner_square_board
-
-    def input_number(self, row: int, col: int, n: int) -> None:
-        self.cell_matrix[row][col].input_number(n)
-    
-    def get_number(self, row: int, col: int) -> Cell:
-        return self.cell_matrix[row][col]
-
-    def print_board(self):
-        print()
-        print((6 * (self.dim-1) + 1) * "-")
-        for row in range(self.dim):
-            curr_row = self.get_row(row)
-            for i, elem in enumerate(curr_row):
-                print(elem, " ",  end='')
-                if (i + 1) % self.dim_sqrt == 0 and i < self.dim - 1:
-                    print("|" + 2 * " ",  end='')
-                else:
-                    print(3 * " ",  end='')
-            if (row + 1) % self.dim_sqrt == 0:
-                print()
-                print((6 * (self.dim-1) + 1) * "-")
-            else:
-                print()
+        if (not one_solution):
+            return temp_sudoku
+        return self.get_one_solution_sudoku(solved_sudoku)
 
 
 if __name__ == "__main__":
-    from sudoku_checker import *
-    b = Board(4)
+    print()
+    b = Board(9)
     checker = BoardChecker("default")
-
-    copied_sudoku = [[0,0,3,0,2,0,6,0,0],
-                    [9,0,0,3,0,5,0,0,1],
-                    [0,0,1,8,0,6,4,0,0],
-                    [0,0,8,1,0,2,9,0,0],
-                    [7,0,0,0,0,0,0,0,8],
-                    [0,0,6,7,0,8,2,0,0],
-                    [0,0,2,6,0,9,5,0,0],
-                    [8,0,0,2,0,3,0,0,9],
-                    [0,0,5,0,1,0,3,0,0]]
+    copied_sudoku = [[0, 0, 3, 0, 2, 0, 6, 0, 0],
+                     [9, 0, 0, 3, 0, 5, 0, 0, 1],
+                     [0, 0, 1, 8, 0, 6, 4, 0, 0],
+                     [0, 0, 8, 1, 0, 2, 9, 0, 0],
+                     [7, 0, 0, 0, 0, 0, 0, 0, 8],
+                     [0, 0, 6, 7, 0, 8, 2, 0, 0],
+                     [0, 0, 2, 6, 0, 9, 5, 0, 0],
+                     [8, 0, 0, 2, 0, 3, 0, 0, 9],
+                     [0, 0, 5, 0, 1, 0, 3, 0, 0]]
     b.set_sudoku_list(copied_sudoku)
     b.print_board()
-    while True:
-        row = int(input("Enter row number :"))
-        col = int(input("Enter col number :"))
-        n = int(input("Enter number :"))
-        b.input_number(row, col, n)
-        print("Sub square row,col: ", b.get_inner_square_row_col(row, col))
-        b.print_board()
-     
+    sol = checker.solve([b])
+    sol[0].print_board()
+
+    generator = SudokuGenerator(checker)
+
+    one_solution_sudoku = generator.get_one_solution_sudoku(sol)
+    one_solution_sudoku.print_board()
