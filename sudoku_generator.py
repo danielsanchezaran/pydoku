@@ -1,7 +1,8 @@
 from sudoku import Board
 from sudoku_checker import BoardChecker
 from copy import deepcopy
-from random import randint
+from random import randint, sample
+import random
 
 
 class SudokuGenerator:
@@ -10,8 +11,8 @@ class SudokuGenerator:
 
     def get_one_solution_sudoku(self, solved_sudoku: "list[Board]") -> Board:
         temp_sudoku = deepcopy(solved_sudoku[0])
-        row_to_null = randint(0, 8)
-        col_to_null = randint(0, 8)
+        row_to_null = randint(0, solved_sudoku[0].dim - 1)
+        col_to_null = randint(0, solved_sudoku[0].dim - 1)
         solved_sudoku[0].input_number(row_to_null, col_to_null, 0)
         one_solution = self.checker.has_unique_solution(solved_sudoku)
 
@@ -19,6 +20,48 @@ class SudokuGenerator:
             return temp_sudoku
         return self.get_one_solution_sudoku(solved_sudoku)
 
+    def swap_digits(self, n_1: int, n_2: int, board: "list[Board]") -> Board:
+        out_board = deepcopy(board[0])
+        pos_1 = -1
+        pos_2 = -1
+        for i in range(board[0].dim):
+            row = board[0].get_row(i)
+            for j in range(len(row)):
+                if row[j] == n_1:
+                    pos_1 = j
+                if row[j] == n_2:
+                    pos_2 = j
+                if pos_1 > 0 and pos_2 > 0:
+                    break
+            row[pos_1], row[pos_2] = row[pos_2], row[pos_1]
+            out_board.cell_matrix[i] = row
+            pos_1 = -1
+            pos_2 = -1
+        return out_board
+
+    def swap_random_digits(self, board: "list[Board]") -> Board:
+        n_1, n_2 = sample(range(1, board[0].dim - 1), 2)
+        return self.swap_digits(n_1, n_2, board)
+
+    def swap_rows(self, row_1: int, row_2: int, board: "list[Board]") -> Board:
+        out_board = deepcopy(board[0])
+        out_board.cell_matrix[row_1], out_board.cell_matrix[row_2] = out_board.cell_matrix[row_2], out_board.cell_matrix[row_1]
+        return out_board
+
+    def shuffle_rows(self, board: "list[Board]") -> Board:
+        out_board = deepcopy(board[0])
+        for i in range(out_board.dim):
+            block_num = int(i / out_board.dim_sqrt)
+            n = randint(0, out_board.dim_sqrt - 1)
+            out_board = self.swap_rows(i,block_num * out_board.dim_sqrt + n,[out_board])
+        return out_board
+
+    def shuffle_cols(self, board: "list[Board]") -> Board:
+        out_board = deepcopy(board[0])
+        out_board.transpose_board()
+        out_board = self.shuffle_rows([out_board])
+        out_board.transpose_board()
+        return out_board
 
 if __name__ == "__main__":
     print()
@@ -42,6 +85,13 @@ if __name__ == "__main__":
     sol[0].print_board()
 
     generator = SudokuGenerator(checker)
+    print("Swapping 9 by 5")
+    new_board = generator.swap_digits(9, 5, sol)
+    new_board.print_board()
+
+    new_board = generator.shuffle_cols([new_board])
+    new_board.print_board()
+
     one_solution_sudoku = generator.get_one_solution_sudoku(sol)
     print("A random sudoku with one solution:")
     one_solution_sudoku.print_board()
