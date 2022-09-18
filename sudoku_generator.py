@@ -62,7 +62,6 @@ class SudokuGenerator:
         out_board = self.shuffle_large_rows([out_board])
         out_board.transpose_board()
         return out_board
-      
 
     def shuffle_rows(self, board: "list[Board]") -> Board:
         out_board = deepcopy(board[0])
@@ -79,6 +78,31 @@ class SudokuGenerator:
         out_board = self.shuffle_rows([out_board])
         out_board.transpose_board()
         return out_board
+
+    def generate_sudoku_list(self, mother_board: "list[Board]", n_sudokus : int)  -> "list[Board]":
+        # mother_board = self.get_one_solution_sudoku(starting_board)
+        out_list = [mother_board[0]]
+
+        while len(out_list) < n_sudokus: 
+            for i in range(len(out_list)):
+                new_elem = self.randomnize_board([out_list[i]])
+                out_list.append(new_elem)
+                if len(out_list) >= n_sudokus:
+                    break
+        return out_list
+
+    def randomnize_board(self, starting_board: "list[Board]") -> Board:
+        n_function = randint(0, 4)
+        if n_function == 0:
+            return self.swap_random_digits(starting_board)
+        if n_function == 1:
+            return self.shuffle_rows(starting_board)
+        if n_function == 2:
+            return self.shuffle_cols(starting_board)
+        if n_function == 3:
+            return self.shuffle_large_rows(starting_board)
+        if n_function == 4:
+            return self.shuffle_large_cols(starting_board)
 
 
 if __name__ == "__main__":
@@ -122,3 +146,14 @@ if __name__ == "__main__":
     one_solution_sudoku = generator.get_one_solution_sudoku(sol)
     print("A random sudoku with one solution:")
     one_solution_sudoku.print_board()
+
+    print("Mother sudoku")
+    mother_sudoku = checker.solve([one_solution_sudoku])
+    mother_sudoku[0].print_board()
+    
+    print("Getting a list of 10 one soultion sudokus")
+    list_of_sudokus = generator.generate_sudoku_list(mother_sudoku,10)
+
+    for i in range(len(list_of_sudokus)):
+        list_of_sudokus[i].print_board()
+
