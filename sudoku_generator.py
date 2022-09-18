@@ -83,17 +83,16 @@ class SudokuGenerator:
         out_list.append(deepcopy(mother_board))
         created_sudokus = 1
         while created_sudokus < n_sudokus: 
-            len_of_list = len(out_list)
-            for i in range(len_of_list):
-                out_list.append(self.randomnize_board(deepcopy(out_list[i])))
-                created_sudokus += 1
-                if created_sudokus >= n_sudokus:
-                    break
+            i = randint(0,len(out_list)-1)
+            out_list.append(self.randomnize_board(deepcopy(out_list[i])))
+            created_sudokus += 1
+            if created_sudokus >= n_sudokus:
+                break
         return out_list
 
     def randomnize_board(self, starting_board: Board) -> Board:
         n_function = randint(0, 4)
-        starting_board.print_board()
+        # starting_board.print_board()
         if n_function == 0:
             return self.swap_random_digits(starting_board)
         if n_function == 1:
@@ -152,9 +151,9 @@ if __name__ == "__main__":
     mother_sudoku = checker.solve([one_solution_sudoku])
     mother_sudoku[0].print_board()
     
-    print("Getting a list of 10 one soultion sudokus")
+    print("Getting a list of 10 one solution sudokus")
     t_start = time.time()
-    list_of_sudokus = generator.generate_sudoku_list(mother_sudoku[0],100)
+    list_of_sudokus = generator.generate_sudoku_list(mother_sudoku[0],100000)
     print("elapsed time is ",time.time() - t_start)
     print("Total Sudokus: ", len(list_of_sudokus))
 

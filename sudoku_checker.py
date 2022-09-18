@@ -11,9 +11,9 @@ class BoardChecker:
         for elem in row_to_check:
             if elem == 0:
                 continue
-            if checked_elems[elem.get_number()-1]:
+            if checked_elems[elem-1]:
                 return False
-            checked_elems[elem.get_number()-1] = True
+            checked_elems[elem-1] = True
         return True
 
     def checkBoardColumn(self, b: Board, col: int) -> bool:
@@ -22,9 +22,9 @@ class BoardChecker:
         for elem in col_to_check:
             if elem == 0:
                 continue
-            if checked_elems[elem.get_number()-1]:
+            if checked_elems[elem-1]:
                 return False
-            checked_elems[elem.get_number()-1] = True
+            checked_elems[elem-1] = True
         return True
 
     def checkBoardInnerSquare(self, b: Board, row: int, col: int) -> bool:
@@ -36,9 +36,9 @@ class BoardChecker:
         for elem in inner_board_as_row_list:
             if elem == 0:
                 continue
-            if checked_elems[elem.get_number() - 1]:
+            if checked_elems[elem - 1]:
                 return False
-            checked_elems[elem.get_number()-1] = True
+            checked_elems[elem-1] = True
         return True
 
     def checkCellisValid(self, b: Board, row: int, col: int) -> bool:

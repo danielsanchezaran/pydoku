@@ -33,7 +33,6 @@ class Cell:
 
 CellList = list[Cell]
 
-
 class Board:
     def __init__(self, n: int) -> None:
         self.cell_matrix = []
@@ -43,8 +42,7 @@ class Board:
         for _ in range(n):
             temp_row = []
             for __ in range(n):
-                c = Cell(0)
-                temp_row.append(c)
+                temp_row.append(0)
             self.cell_matrix.append(temp_row)
         pass
 
@@ -68,13 +66,13 @@ class Board:
             for i in range(self.dim):
                 temp_row = []
                 for j in range(self.dim):
-                    c = Cell(sudoku_list[i][j])
+                    c = sudoku_list[i][j]
                     temp_row.append(c)
                 self.cell_matrix.append(temp_row)
         except:
             raise ValueError
 
-    def get_board_as_row_list(self) -> CellList:
+    def get_board_as_row_list(self) -> "list[int]":
         out_list = []
         for i in range(self.dim):
             row_ = self.get_row(i)
@@ -97,10 +95,10 @@ class Board:
             new_matrix.append(row_)
         self.cell_matrix = new_matrix
 
-    def get_row(self, n_row: int) -> CellList:
+    def get_row(self, n_row: int) -> "list[int]":
         return self.cell_matrix[n_row]
 
-    def get_col(self, n_col: int) -> CellList:
+    def get_col(self, n_col: int) -> "list[int]":
         return [x for x in [self.cell_matrix[y][n_col] for y in range(self.dim)]]
 
     def get_inner_square_row_col(self, row: int, col: int) -> "list[int]":
@@ -118,9 +116,9 @@ class Board:
         return inner_square_board
 
     def input_number(self, row: int, col: int, n: int) -> None:
-        self.cell_matrix[row][col].input_number(n)
+        self.cell_matrix[row][col] = n
 
-    def get_number(self, row: int, col: int) -> Cell:
+    def get_number(self, row: int, col: int) -> int:
         return self.cell_matrix[row][col]
 
     def get_filled_cells_ammount(self) -> int:
@@ -132,7 +130,10 @@ class Board:
         for row in range(self.dim):
             curr_row = self.get_row(row)
             for i, elem in enumerate(curr_row):
-                print(elem, " ",  end='')
+                if elem == 0:
+                    print("X", " ",  end='')
+                else:
+                    print(elem, " ",  end='')
                 if (i + 1) % self.dim_sqrt == 0 and i < self.dim - 1:
                     print("|" + 2 * " ",  end='')
                 else:
