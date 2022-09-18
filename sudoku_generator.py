@@ -14,9 +14,8 @@ class SudokuGenerator:
         row_to_null = randint(0, solved_sudoku[0].dim - 1)
         col_to_null = randint(0, solved_sudoku[0].dim - 1)
         solved_sudoku[0].input_number(row_to_null, col_to_null, 0)
-        one_solution = self.checker.has_unique_solution(solved_sudoku)
 
-        if (not one_solution):
+        if (not self.checker.has_unique_solution(solved_sudoku)):
             return temp_sudoku
         return self.get_one_solution_sudoku(solved_sudoku)
 
@@ -48,12 +47,30 @@ class SudokuGenerator:
         out_board.cell_matrix[row_1], out_board.cell_matrix[row_2] = out_board.cell_matrix[row_2], out_board.cell_matrix[row_1]
         return out_board
 
+    def shuffle_large_rows(self, board: "list[Board]") -> Board:
+        out_board = deepcopy(board[0])
+        for original_row in range(out_board.dim_sqrt):
+            target_row = randint(0, out_board.dim_sqrt - 1)
+            for n in range(out_board.dim_sqrt):
+                out_board = self.swap_rows(
+                    (original_row * out_board.dim_sqrt) + n, (target_row * out_board.dim_sqrt) + n, [out_board])
+        return out_board
+
+    def shuffle_large_cols(self, board: "list[Board]") -> Board:
+        out_board = deepcopy(board[0])
+        out_board.transpose_board()
+        out_board = self.shuffle_large_rows([out_board])
+        out_board.transpose_board()
+        return out_board
+      
+
     def shuffle_rows(self, board: "list[Board]") -> Board:
         out_board = deepcopy(board[0])
         for i in range(out_board.dim):
             block_num = int(i / out_board.dim_sqrt)
             n = randint(0, out_board.dim_sqrt - 1)
-            out_board = self.swap_rows(i,block_num * out_board.dim_sqrt + n,[out_board])
+            out_board = self.swap_rows(
+                i, block_num * out_board.dim_sqrt + n, [out_board])
         return out_board
 
     def shuffle_cols(self, board: "list[Board]") -> Board:
@@ -62,6 +79,7 @@ class SudokuGenerator:
         out_board = self.shuffle_rows([out_board])
         out_board.transpose_board()
         return out_board
+
 
 if __name__ == "__main__":
     print()
@@ -89,7 +107,16 @@ if __name__ == "__main__":
     new_board = generator.swap_digits(9, 5, sol)
     new_board.print_board()
 
+    print("Shuffled Cols")
     new_board = generator.shuffle_cols([new_board])
+    new_board.print_board()
+
+    print("Shuffled Large Row")
+    new_board = generator.shuffle_large_rows([new_board])
+    new_board.print_board()
+
+    print("Shuffled Large Col")
+    new_board = generator.shuffle_large_cols([new_board])
     new_board.print_board()
 
     one_solution_sudoku = generator.get_one_solution_sudoku(sol)
