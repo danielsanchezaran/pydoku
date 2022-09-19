@@ -65,7 +65,7 @@ def drawGrid(game_sudoku: Board) -> None:
 def showNumbers(x: int, y: int, n: int) -> None:
     font = pygame.font.Font('freesansbold.ttf', 32)
     if n == 0:
-        text = font.render("X", True, BLACK, WHITE)
+        text = font.render(" ", True, BLACK, WHITE)
     else:
         text = font.render(str(n), True, BLACK, WHITE)
     textRect = text.get_rect()
