@@ -1,6 +1,7 @@
 from sudoku import Board
 from copy import deepcopy
 
+
 class BoardChecker:
     def __init__(self, solving_method: str) -> None:
         self.solving_method = solving_method

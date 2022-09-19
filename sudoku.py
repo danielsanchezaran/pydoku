@@ -33,6 +33,7 @@ class Cell:
 
 CellList = list[Cell]
 
+
 class Board:
     def __init__(self, n: int) -> None:
         self.cell_matrix = []
