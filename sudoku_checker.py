@@ -65,9 +65,8 @@ class BoardChecker:
         row = 0
         col = 0
 
-        b_clone = b
         self.bruteForceSolve(
-            b_clone, row, col, input_n, sol_list, check_one_soltion)
+            b, row, col, input_n, sol_list, check_one_soltion)
         return sol_list
 
     def bruteForceSolve(self, b: "list[Board]", row: int, col: int, input_n: int, sol_list: "list[Board]", check_one_soltion=False) -> bool:
