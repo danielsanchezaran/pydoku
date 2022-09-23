@@ -12,6 +12,7 @@ BLACK = (0, 0, 0)
 WHITE = (200, 200, 200)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 128)
+YELLOW = (200,200,0)
 WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 800
 
@@ -26,6 +27,7 @@ class BoardCell:
         self.font = pygame.font.Font('freesansbold.ttf', 32)
         self.mutable = mutable
         self.select_color = GREEN
+        self.mutable_color = YELLOW
         self.clicked_on = False
         self.setNumber(number)
         pass

@@ -53,7 +53,6 @@ def main():
         checkPuzzleSolved(game_sudoku_solved,game_sudoku)
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.unicode.isdigit():
-                print(int(event.unicode))
                 graphic_board.setNumber(int(event.unicode))
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -85,6 +84,8 @@ def checkClicks(graphic_board: GraphicBoard) -> None:
 def drawBoard(graphic_board: GraphicBoard) -> None:
     for cell in graphic_board.boardCellList:
         pygame.draw.rect(SCREEN, BLACK, cell.outer_rect, 1)
+        if cell.mutable:
+            pygame.draw.rect(SCREEN, cell.mutable_color, cell.inner_rect, 0)
         if cell.clicked_on:
             pygame.draw.rect(SCREEN, cell.select_color, cell.inner_rect, 0)
         SCREEN.blit(cell.text, cell.text_rect)
