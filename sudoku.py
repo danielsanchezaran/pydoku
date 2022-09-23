@@ -4,7 +4,7 @@ import math
 
 
 class Cell:
-    def __init__(self, number) -> None:
+    def __init__(self, number: int) -> None:
         self.number = number
         pass
 
@@ -15,7 +15,7 @@ class Cell:
 
     def __str__(self):
         if self.number == 0:
-            return "X"
+            return " "
         return str(self.number)
 
     def __eq__(self, __o: object) -> bool:
