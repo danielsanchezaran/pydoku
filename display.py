@@ -39,7 +39,7 @@ def main():
     game_sudoku_solved.print_board()
     game_sudoku = generator.get_one_solution_sudoku([game_sudoku_solved])
 
-    while (game_sudoku.get_filled_cells_ammount() > (game_sudoku.dim**2) * 0.4):
+    while (game_sudoku.get_filled_cells_ammount() > (game_sudoku.dim**2) * 0.5):
         game_sudoku = generator.get_one_solution_sudoku([game_sudoku_solved])
     print("Filled cells ", game_sudoku.get_filled_cells_ammount())
     graphic_board = GraphicBoard(game_sudoku, side_lengt=WINDOW_WIDTH //
@@ -51,6 +51,9 @@ def main():
         checkClicks(graphic_board=graphic_board)
         drawBoard(graphic_board)
         for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.unicode.isdigit():
+                print(int(event.unicode))
+                graphic_board.setNumber(int(event.unicode))
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -59,10 +62,13 @@ def main():
 
 def checkClicks(graphic_board: GraphicBoard) -> None:
     if pygame.mouse.get_pressed()[0]:
+        graphic_board.selected_cell_index = -1
         for i, cell in enumerate(graphic_board.boardCellList):
             cell.clicked_on = False
-            if cell.outer_rect.collidepoint(pygame.mouse.get_pos()):
+            if cell.outer_rect.collidepoint(pygame.mouse.get_pos()) and cell.mutable:
                 cell.clicked_on = True
+                graphic_board.selected_cell_index = i
+
 
 def drawBoard(graphic_board: GraphicBoard) -> None:
     for cell in graphic_board.boardCellList:
@@ -92,6 +98,11 @@ def showNumbers(x: int, y: int, n: int) -> None:
     text_rect = text.get_rect()
     text_rect.center = (x, y)
     SCREEN.blit(text, text_rect)
+
+# def checkInsertNumber():
+#     keys=pygame.key.get_pressed()
+#     if keys[K_0]:
+
 
 
 if __name__ == "__main__":
