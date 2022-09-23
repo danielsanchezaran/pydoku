@@ -21,10 +21,10 @@ class Cell:
     def __eq__(self, __o: object) -> bool:
         return self.number == __o
 
-    def get_number(self) -> int:
+    def getNumber(self) -> int:
         return self.number
 
-    def input_number(self, number: int) -> None:
+    def setNumber(self, number: int) -> None:
         self.number = number
 
     def print_number(self) -> None:
@@ -48,8 +48,8 @@ class Board:
         pass
 
     def __eq__(self, __o: Board) -> bool:
-        this_board = self.get_board_as_row_list()
-        o_list = __o.get_board_as_row_list()
+        this_board = self.getBoardAsRowList()
+        o_list = __o.getBoardAsRowList()
         if len(o_list) != len(this_board):
             return False
         compare = True
@@ -59,7 +59,7 @@ class Board:
             i += 1
         return compare
 
-    def set_sudoku_list(self, sudoku_list: "list[int]") -> None:
+    def setSudokuList(self, sudoku_list: "list[int]") -> None:
         self.cell_matrix = []
         try:
             self.dim = len(sudoku_list)
@@ -73,39 +73,39 @@ class Board:
         except:
             raise ValueError
 
-    def get_board_as_row_list(self) -> "list[int]":
+    def getBoardAsRowList(self) -> "list[int]":
         out_list = []
         for i in range(self.dim):
-            row_ = self.get_row(i)
+            row_ = self.getRow(i)
             out_list += row_
         return out_list
 
-    def transpose_board(self) -> None:
+    def transposeBoard(self) -> None:
         new_matrix = []
         for i in range(self.dim):
-            new_matrix.append(self.get_col(i))
+            new_matrix.append(self.getCol(i))
         self.cell_matrix = new_matrix
 
     # 90 degree  CCW rotation
-    def rotate_board(self) -> None:
-        self.transpose_board()
+    def rotateBoard(self) -> None:
+        self.transposeBoard()
         new_matrix = []
         for i in range(self.dim):
-            row_ = self.get_row(i)
+            row_ = self.getRow(i)
             row_ = row_[::-1]
             new_matrix.append(row_)
         self.cell_matrix = new_matrix
 
-    def get_row(self, n_row: int) -> "list[int]":
+    def getRow(self, n_row: int) -> "list[int]":
         return self.cell_matrix[n_row]
 
-    def get_col(self, n_col: int) -> "list[int]":
+    def getCol(self, n_col: int) -> "list[int]":
         return [x for x in [self.cell_matrix[y][n_col] for y in range(self.dim)]]
 
-    def get_inner_square_row_col(self, row: int, col: int) -> "list[int]":
+    def getInnerSquareRowCol(self, row: int, col: int) -> "list[int]":
         return [int(row / self.dim_sqrt), int(col / self.dim_sqrt)]
 
-    def get_inner_square(self, n_square_row: int, n_square_col: int) -> Board:
+    def getInnerSquare(self, n_square_row: int, n_square_col: int) -> Board:
         inner_square = []
         for row in range(n_square_row*self.dim_sqrt, n_square_row * self.dim_sqrt + self.dim_sqrt):
             temp_square = []
@@ -116,20 +116,20 @@ class Board:
         inner_square_board.cell_matrix = inner_square
         return inner_square_board
 
-    def input_number(self, row: int, col: int, n: int) -> None:
+    def setNumber(self, row: int, col: int, n: int) -> None:
         self.cell_matrix[row][col] = n
 
-    def get_number(self, row: int, col: int) -> int:
+    def getNumber(self, row: int, col: int) -> int:
         return self.cell_matrix[row][col]
 
-    def get_filled_cells_ammount(self) -> int:
-        return self.dim ** 2 - self.get_board_as_row_list().count(0)
+    def getFilledCellsAmmount(self) -> int:
+        return self.dim ** 2 - self.getBoardAsRowList().count(0)
 
-    def print_board(self):
+    def printBoard(self):
         print()
         print((6 * (self.dim-1) + 1) * "-")
         for row in range(self.dim):
-            curr_row = self.get_row(row)
+            curr_row = self.getRow(row)
             for i, elem in enumerate(curr_row):
                 if elem == 0:
                     print("X", " ",  end='')
@@ -160,14 +160,14 @@ if __name__ == "__main__":
                      [0, 0, 2, 6, 0, 9, 5, 0, 0],
                      [8, 0, 0, 2, 0, 3, 0, 0, 9],
                      [0, 0, 5, 0, 1, 0, 3, 0, 0]]
-    b.set_sudoku_list(copied_sudoku)
-    b.print_board()
+    b.setSudokuList(copied_sudoku)
+    b.printBoard()
 
-    print("Filled cells:", b.get_filled_cells_ammount())
+    print("Filled cells:", b.getFilledCellsAmmount())
     while True:
         row = int(input("Enter row number :"))
         col = int(input("Enter col number :"))
         n = int(input("Enter number :"))
-        b.input_number(row, col, n)
-        print("Sub square row,col: ", b.get_inner_square_row_col(row, col))
-        b.print_board()
+        b.setNumber(row, col, n)
+        print("Sub square row,col: ", b.getInnerSquareRowCol(row, col))
+        b.printBoard()

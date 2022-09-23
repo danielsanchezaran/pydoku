@@ -13,9 +13,9 @@ class SudokuGenerator:
         temp_sudoku = deepcopy(solved_sudoku[0])
         row_to_null = randint(0, solved_sudoku[0].dim - 1)
         col_to_null = randint(0, solved_sudoku[0].dim - 1)
-        solved_sudoku[0].input_number(row_to_null, col_to_null, 0)
+        solved_sudoku[0].setNumber(row_to_null, col_to_null, 0)
 
-        if (not self.checker.has_unique_solution(solved_sudoku)):
+        if (not self.checker.hasUniqueSolution(solved_sudoku)):
             return temp_sudoku
         return self.get_one_solution_sudoku(solved_sudoku)
 
@@ -24,7 +24,7 @@ class SudokuGenerator:
         pos_1 = -1
         pos_2 = -1
         for i in range(board.dim):
-            row = board.get_row(i)
+            row = board.getRow(i)
             for j in range(len(row)):
                 if row[j] == n_1:
                     pos_1 = j
@@ -50,17 +50,17 @@ class SudokuGenerator:
     def shuffle_large_rows(self, board: Board) -> Board:
         # board[0] = deepcopy(board[0])
         for original_row in range(board.dim_sqrt):
-            target_row = randint(0, board.dim_sqrt - 1)
+            targetRow = randint(0, board.dim_sqrt - 1)
             for n in range(board.dim_sqrt):
                 board = self.swap_rows(
-                    (original_row * board.dim_sqrt) + n, (target_row * board.dim_sqrt) + n, board)
+                    (original_row * board.dim_sqrt) + n, (targetRow * board.dim_sqrt) + n, board)
         return board
 
     def shuffle_large_cols(self, board: Board) -> Board:
         # board[0] = deepcopy(board[0])
-        board.transpose_board()
+        board.transposeBoard()
         board = self.shuffle_large_rows(board)
-        board.transpose_board()
+        board.transposeBoard()
         return board
 
     def shuffle_rows(self, board: Board) -> Board:
@@ -74,9 +74,9 @@ class SudokuGenerator:
 
     def shuffle_cols(self, board: Board) -> Board:
         # board[0] = deepcopy(board[0])
-        board.transpose_board()
+        board.transposeBoard()
         board = self.shuffle_rows(board)
-        board.transpose_board()
+        board.transposeBoard()
         return board
 
     def generate_sudoku_list(self, mother_board: "Board", n_sudokus: int) -> Board:
@@ -93,7 +93,7 @@ class SudokuGenerator:
 
     def randomnize_board(self, starting_board: Board) -> Board:
         n_function = randint(0, 4)
-        # starting_board.print_board()
+        # starting_board.printBoard()
         if n_function == 0:
             return self.swap_random_digits(starting_board)
         if n_function == 1:
@@ -119,38 +119,38 @@ if __name__ == "__main__":
                      [0, 0, 2, 6, 0, 9, 5, 0, 0],
                      [8, 0, 0, 2, 0, 3, 0, 0, 9],
                      [0, 0, 5, 0, 1, 0, 3, 0, 0]]
-    b.set_sudoku_list(copied_sudoku)
+    b.setSudokuList(copied_sudoku)
     print("Original Sudoku")
-    b.print_board()
+    b.printBoard()
 
     sol = checker.solve([b])
     print("Solution:")
-    sol[0].print_board()
+    sol[0].printBoard()
 
     generator = SudokuGenerator(checker)
     print("Swapping 9 by 5")
     new_board = generator.swap_digits(9, 5, sol[0])
-    new_board.print_board()
+    new_board.printBoard()
 
     print("Shuffled Cols")
     new_board = generator.shuffle_cols(new_board)
-    new_board.print_board()
+    new_board.printBoard()
 
     print("Shuffled Large Row")
     new_board = generator.shuffle_large_rows(new_board)
-    new_board.print_board()
+    new_board.printBoard()
 
     print("Shuffled Large Col")
     new_board = generator.shuffle_large_cols(new_board)
-    new_board.print_board()
+    new_board.printBoard()
 
     one_solution_sudoku = generator.get_one_solution_sudoku(sol)
     print("A random sudoku with one solution:")
-    one_solution_sudoku.print_board()
+    one_solution_sudoku.printBoard()
 
     print("Mother sudoku")
     mother_sudoku = checker.solve([one_solution_sudoku])
-    mother_sudoku[0].print_board()
+    mother_sudoku[0].printBoard()
 
     print("Getting a list of 10 one solution sudokus")
     t_start = time.time()
@@ -159,4 +159,4 @@ if __name__ == "__main__":
     print("Total Sudokus: ", len(list_of_sudokus))
 
     for i in range(10):
-        list_of_sudokus[i].print_board()
+        list_of_sudokus[i].printBoard()

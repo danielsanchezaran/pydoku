@@ -49,7 +49,7 @@ class GraphicBoard:
         self.boardCellList: "list[BoardCell]" = []
         for i, x in enumerate(range(x_start, x_start + side_lengt, self.block_size)):
             for j, y in enumerate(range(y_start, y_start + side_lengt, self.block_size)):
-                number = self.board.get_number(j, i)
+                number = self.board.getNumber(j, i)
                 self.boardCellList.append(
                     BoardCell(x, y, self.block_size, number, mutable=number == 0))
         pass
@@ -58,4 +58,7 @@ class GraphicBoard:
         if self.selected_cell_index > self.board_dim ** 2 or self.selected_cell_index < 0:
             return
         if self.boardCellList[self.selected_cell_index].mutable:
+            col = self.selected_cell_index // self.board_dim
+            row = self.selected_cell_index - col * self.board_dim 
             self.boardCellList[self.selected_cell_index].setNumber(number)
+            self.board.setNumber(row,col,number)

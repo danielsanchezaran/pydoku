@@ -28,20 +28,20 @@ def main():
                      [0, 0, 2, 6, 0, 9, 5, 0, 0],
                      [8, 0, 0, 2, 0, 3, 0, 0, 9],
                      [0, 0, 5, 0, 1, 0, 3, 0, 0]]
-    mother_sudoku.set_sudoku_list(copied_sudoku)
+    mother_sudoku.setSudokuList(copied_sudoku)
     checker = BoardChecker("default")
     generator = SudokuGenerator(checker)
     mother_sudoku = checker.solve([mother_sudoku])
     mother_sudoku = mother_sudoku[0]
     list_of_sudokus = generator.generate_sudoku_list(mother_sudoku, 10000)
-    mother_sudoku.print_board()
+    mother_sudoku.printBoard()
     game_sudoku_solved = list_of_sudokus[randint(0, 10000)]
-    game_sudoku_solved.print_board()
+    game_sudoku_solved.printBoard()
     game_sudoku = generator.get_one_solution_sudoku([game_sudoku_solved])
 
-    while (game_sudoku.get_filled_cells_ammount() > (game_sudoku.dim**2) * 0.5):
+    while (game_sudoku.getFilledCellsAmmount() > (game_sudoku.dim**2) * 0.5):
         game_sudoku = generator.get_one_solution_sudoku([game_sudoku_solved])
-    print("Filled cells ", game_sudoku.get_filled_cells_ammount())
+    print("Filled cells ", game_sudoku.getFilledCellsAmmount())
     graphic_board = GraphicBoard(game_sudoku, side_lengt=WINDOW_WIDTH //
                                  2, x_start=WINDOW_WIDTH // 4, y_start=WINDOW_HEIGHT // 4)
 
@@ -50,6 +50,7 @@ def main():
         SCREEN.fill(WHITE)
         checkClicks(graphic_board=graphic_board)
         drawBoard(graphic_board)
+        checkPuzzleSolved(game_sudoku_solved,game_sudoku)
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.unicode.isdigit():
                 print(int(event.unicode))
@@ -59,6 +60,17 @@ def main():
                 sys.exit()
         pygame.display.update()
 
+def checkPuzzleSolved(solved_board: Board, current_board: Board) -> bool:
+    if current_board.getFilledCellsAmmount() != current_board.dim ** 2:
+        return False
+    solved_list = solved_board.getBoardAsRowList()
+    current_list = current_board.getBoardAsRowList()
+    if len(current_list) != len(solved_list):
+        return False 
+    for i in range(len(solved_list)):
+        if solved_list[i] != current_list[i]:
+            return False 
+    return True
 
 def checkClicks(graphic_board: GraphicBoard) -> None:
     if pygame.mouse.get_pressed()[0]:
@@ -86,7 +98,7 @@ def drawGrid(game_sudoku: Board) -> None:
             rect = pygame.Rect(x, y, block_size, block_size)
             pygame.draw.rect(SCREEN, BLACK, rect, 1)
             showNumbers(x + block_size // 2, y +
-                        block_size // 2, game_sudoku.get_number(j, i))
+                        block_size // 2, game_sudoku.getNumber(j, i))
 
 
 def showNumbers(x: int, y: int, n: int) -> None:
