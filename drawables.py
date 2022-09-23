@@ -27,22 +27,16 @@ class BoardCell:
         self.mutable = mutable
         self.select_color = GREEN
         self.clicked_on = False
-
-        self.text = self.setNumber(number)
-        self.text_rect = self.text.get_rect()
-        self.text_rect.center = (x + side_lenght // 2, y + side_lenght // 2)
+        self.setNumber(number)
         pass
 
-    def changeNumber(self, number: int) -> None:
-        self.text = self.setNumber(number)
+    def setNumber(self, number: int) -> None:
+        if number == 0:
+            self.text =  self.font.render("", True, BLACK, None)
+        else:
+            self.text =  self.font.render(str(number), True, BLACK, None)
         self.text_rect = self.text.get_rect()
         self.text_rect.center = (self.x + self.side_lenght // 2, self.y + self.side_lenght // 2)
-
-    def setNumber(self, number: int) -> Surface:
-        if number == 0:
-            return self.font.render("", True, BLACK, None)
-        else:
-            return self.font.render(str(number), True, BLACK, None)
 
 
 class GraphicBoard:
@@ -64,4 +58,4 @@ class GraphicBoard:
         if self.selected_cell_index > self.board_dim ** 2 or self.selected_cell_index < 0:
             return
         if self.boardCellList[self.selected_cell_index].mutable:
-            self.boardCellList[self.selected_cell_index].changeNumber(number)
+            self.boardCellList[self.selected_cell_index].setNumber(number)

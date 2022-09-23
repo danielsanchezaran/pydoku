@@ -99,11 +99,5 @@ def showNumbers(x: int, y: int, n: int) -> None:
     text_rect.center = (x, y)
     SCREEN.blit(text, text_rect)
 
-# def checkInsertNumber():
-#     keys=pygame.key.get_pressed()
-#     if keys[K_0]:
-
-
-
 if __name__ == "__main__":
     main()
