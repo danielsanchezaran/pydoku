@@ -4,7 +4,6 @@ from sudoku_checker import BoardChecker
 from sudoku import Board
 from copy import deepcopy
 from pygame.locals import *
-# one of these is probably what you want
 from pygame import rect, Rect, Surface
 import pygame
 import sys
@@ -34,7 +33,7 @@ class BoardCell:
         self.text_rect.center = (x + side_lenght // 2, y + side_lenght // 2)
         pass
 
-    def changeNumber(self, number: int) -> Surface:
+    def changeNumber(self, number: int) -> None:
         self.text = self.setNumber(number)
         self.text_rect = self.text.get_rect()
         self.text_rect.center = (self.x + self.side_lenght // 2, self.y + self.side_lenght // 2)
