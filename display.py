@@ -18,6 +18,7 @@ def main():
     CLOCK = pygame.time.Clock()
     SCREEN.fill(WHITE)
 
+    font = pygame.font.Font('freesansbold.ttf', 32)
     mother_sudoku = Board(9)
     copied_sudoku = [[0, 0, 3, 0, 2, 0, 6, 0, 0],
                      [9, 0, 0, 3, 0, 5, 0, 0, 1],
@@ -33,31 +34,44 @@ def main():
     generator = SudokuGenerator(checker)
     mother_sudoku = checker.solve([mother_sudoku])
     mother_sudoku = mother_sudoku[0]
-    list_of_sudokus = generator.generate_sudoku_list(mother_sudoku, 10000)
+    list_of_sudokus = generator.generate_sudoku_list(mother_sudoku, 1000)
     mother_sudoku.printBoard()
-    game_sudoku_solved = list_of_sudokus[randint(0, 10000)]
+    game_sudoku_solved : Board = list_of_sudokus[randint(0, 1000)]
+    game_sudoku = generator.get_one_solution_sudoku([deepcopy(game_sudoku_solved)])
     game_sudoku_solved.printBoard()
-    game_sudoku = generator.get_one_solution_sudoku([game_sudoku_solved])
-
-    while (game_sudoku.getFilledCellsAmmount() > (game_sudoku.dim**2) * 0.5):
-        game_sudoku = generator.get_one_solution_sudoku([game_sudoku_solved])
+    while (game_sudoku.getFilledCellsAmmount() > (game_sudoku.dim**2)):
+        game_sudoku = generator.get_one_solution_sudoku([deepcopy(game_sudoku_solved)])
     print("Filled cells ", game_sudoku.getFilledCellsAmmount())
     graphic_board = GraphicBoard(game_sudoku, side_lengt=WINDOW_WIDTH //
                                  2, x_start=WINDOW_WIDTH // 4, y_start=WINDOW_HEIGHT // 4)
-
-    # drawGrid(game_sudoku)
+    solve_button = pygame.Rect(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 10, WINDOW_HEIGHT // 10, WINDOW_HEIGHT // 10)
+    button_list = [solve_button]
     while True:
         SCREEN.fill(WHITE)
-        checkClicks(graphic_board=graphic_board)
         drawBoard(graphic_board)
-        checkPuzzleSolved(game_sudoku_solved,game_sudoku)
+        drawButtons(button_list=button_list)
+        if (checkPuzzleSolved(game_sudoku_solved,graphic_board.board)):
+            graphic_board.selected_cell_index = -1
+            solved_text = font.render("Solved", True, BLACK, None)
+            solved_text_rect = solved_text.get_rect()
+            solved_text_rect.center = (WINDOW_WIDTH // 2, 9 * WINDOW_HEIGHT // 10)
+            SCREEN.blit(solved_text, solved_text_rect)
+        else: 
+            checkClicks(graphic_board=graphic_board, button_list=button_list)
+            
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.unicode.isdigit():
                 graphic_board.setNumber(int(event.unicode))
+                game_sudoku_solved.printBoard()
+                graphic_board.board.printBoard()
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
         pygame.display.update()
+
+def drawButtons(button_list : "list[Rect]"):
+    for button in button_list:
+        pygame.draw.rect(SCREEN, BLACK, button, 1)
 
 def checkPuzzleSolved(solved_board: Board, current_board: Board) -> bool:
     if current_board.getFilledCellsAmmount() != current_board.dim ** 2:
@@ -71,7 +85,7 @@ def checkPuzzleSolved(solved_board: Board, current_board: Board) -> bool:
             return False 
     return True
 
-def checkClicks(graphic_board: GraphicBoard) -> None:
+def checkBoardClicks(graphic_board: GraphicBoard) -> None:
     if pygame.mouse.get_pressed()[0]:
         graphic_board.selected_cell_index = -1
         for i, cell in enumerate(graphic_board.boardCellList):
@@ -79,6 +93,18 @@ def checkClicks(graphic_board: GraphicBoard) -> None:
             if cell.outer_rect.collidepoint(pygame.mouse.get_pos()) and cell.mutable:
                 cell.clicked_on = True
                 graphic_board.selected_cell_index = i
+
+def checkButtonPress(graphic_board: GraphicBoard, button_list : "list[Rect]") -> int:
+    for i, button in enumerate(button_list):
+        if pygame.mouse.get_pressed()[0] and button.collidepoint(pygame.mouse.get_pos()):
+            graphic_board.solve()
+            return i 
+    return -1
+
+
+def checkClicks(graphic_board: GraphicBoard, button_list : "list[Rect]") -> None:
+    checkBoardClicks(graphic_board=graphic_board)
+    checkButtonPress(graphic_board=graphic_board, button_list=button_list)
 
 
 def drawBoard(graphic_board: GraphicBoard) -> None:

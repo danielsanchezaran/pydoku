@@ -43,7 +43,8 @@ class BoardCell:
 
 class GraphicBoard:
     def __init__(self, board_: Board, side_lengt: int, x_start: int, y_start: int) -> None:
-        self.board = board_
+        self.starting_board = deepcopy(board_)
+        self.board = deepcopy(board_)
         self.board_dim = self.board.dim
         self.block_size = 1 + side_lengt // self.board_dim
         self.selected_cell_index = -1
@@ -64,3 +65,12 @@ class GraphicBoard:
             row = self.selected_cell_index - col * self.board_dim 
             self.boardCellList[self.selected_cell_index].setNumber(number)
             self.board.setNumber(row,col,number)
+    def solve(self) -> None:
+        checker = BoardChecker("default")
+        self.starting_board = checker.solve([self.starting_board])[0]
+        self.starting_board.transposeBoard()
+        number_list = self.starting_board.getBoardAsRowList()
+        for i,cell in enumerate(self.boardCellList):
+            cell.setNumber(number_list[i])
+        self.starting_board.transposeBoard()
+        self.board = deepcopy(self.starting_board)
